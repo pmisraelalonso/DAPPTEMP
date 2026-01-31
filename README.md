@@ -106,7 +106,7 @@ Once you have Node.js, npm, and Git installed, follow these steps:
 Copy the project from Bitbucket to your computer:
 
 ```bash
-git clone https://bitbucket.org/dynamic_tech_web3/dapp.git
+git clone https://github.com/Dynamic-community/dapp.git
 ```
 
 Move into the project folder:
